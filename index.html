@@ -890,15 +890,23 @@ header.nav-hidden{
   position:absolute;
   left:var(--x);
   top:var(--y);
+  z-index:1;
   color:#aaa39a;
   font-family:Georgia, "Times New Roman", serif;
   font-size:var(--size);
-  opacity:var(--opacity);
-  text-shadow:0 0 18px currentColor;
+
+  opacity:calc(var(--opacity) + .08);
+
+  text-shadow:
+    0 0 10px currentColor,
+    0 0 28px currentColor;
+
   transform:rotate(var(--rotation));
+  will-change:transform,opacity;
+
   animation:
     horror-drift var(--speed) ease-in-out infinite alternate,
-    horror-flicker 7s steps(1) infinite;
+    horror-flicker 8s ease-in-out infinite alternate;
 }
 
 .horror-symbol.gold{
@@ -910,24 +918,38 @@ header.nav-hidden{
 }
 
 @keyframes horror-drift{
-  from{
+  0%{
     transform:
-      translate3d(0,12px,0)
+      translate3d(-5px,24px,0)
       rotate(var(--rotation));
   }
-  to{
+
+  45%{
     transform:
       translate3d(var(--drift),-22px,0)
-      rotate(calc(var(--rotation) + 7deg));
+      rotate(calc(var(--rotation) + 6deg));
+  }
+
+  75%{
+    transform:
+      translate3d(0,-44px,0)
+      rotate(calc(var(--rotation) - 4deg));
+  }
+
+  100%{
+    transform:
+      translate3d(var(--drift),-64px,0)
+      rotate(calc(var(--rotation) + 10deg));
   }
 }
 
 @keyframes horror-flicker{
-  0%,18%,22%,65%,100%{
-    opacity:var(--opacity);
+  0%,100%{
+    opacity:calc(var(--opacity) + .06);
   }
-  20%,67%{
-    opacity:calc(var(--opacity) * 0.35);
+
+  50%{
+    opacity:calc(var(--opacity) + .11);
   }
 }
 
@@ -1392,6 +1414,41 @@ html{
         style="--x:61%;--y:30%;--size:40px;--opacity:.08;--rotation:-24deg;--speed:13s;--drift:18px;">
     🗡︎
   </span>
+
+  <span class="horror-symbol gold"
+      style="--x:16%;--y:37%;--size:38px;--opacity:.10;--rotation:19deg;--speed:12s;--drift:42px;">
+  ⚿
+</span>
+
+<span class="horror-symbol"
+      style="--x:78%;--y:48%;--size:58px;--opacity:.09;--rotation:-8deg;--speed:17s;--drift:-46px;">
+  ⌂
+</span>
+
+<span class="horror-symbol red"
+      style="--x:8%;--y:92%;--size:44px;--opacity:.10;--rotation:-5deg;--speed:15s;--drift:38px;">
+  41
+</span>
+
+<span class="horror-symbol"
+      style="--x:53%;--y:90%;--size:46px;--opacity:.075;--rotation:6deg;--speed:14s;--drift:48px;">
+  ╱╱╱
+</span>
+
+<span class="horror-symbol red"
+      style="--x:92%;--y:72%;--size:34px;--opacity:.10;--rotation:-10deg;--speed:16s;--drift:-38px;">
+  ◉
+</span>
+
+<span class="horror-symbol red"
+      style="--x:32%;--y:82%;--size:44px;--opacity:.09;--rotation:15deg;--speed:11s;--drift:52px;">
+  🗡︎
+</span>
+
+<span class="horror-symbol gold"
+      style="--x:69%;--y:7%;--size:42px;--opacity:.08;--rotation:-5deg;--speed:18s;--drift:-34px;">
+  ⌑
+</span>
 
 </div>
 
