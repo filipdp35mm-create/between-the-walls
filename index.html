@@ -55,18 +55,13 @@
 }
 
 body{
-  background:
-    radial-gradient(
-      circle at 15% 35%,
-      rgba(90,0,0,0.13),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 85% 65%,
-      rgba(122,88,25,0.09),
-      transparent 35%
-    ),
-    #020202;
+background:
+  radial-gradient(
+    circle at 15% 35%,
+    rgba(90,0,0,0.13),
+    transparent 32%
+  ),
+  #020202;
   color:var(--fg);
   font-family:var(--sans);
   font-weight:300;
@@ -858,16 +853,27 @@ header.nav-hidden{
 .horror-atmosphere::after{
   content:'';
   position:absolute;
-  inset:-20%;
+  left:-25vmax;
+  top:-25vmax;
+  width:70vmax;
+  height:70vmax;
   z-index:0;
+  border-radius:50%;
+
   background:radial-gradient(
-    circle at 65% 65%,
-    rgba(170,124,40,0.14),
-    transparent 27%
+    circle,
+    rgba(194,143,48,.17) 0%,
+    rgba(150,103,27,.10) 27%,
+    rgba(90,58,12,.045) 48%,
+    transparent 72%
   );
-  filter:blur(12px);
+
+  filter:blur(38px);
+  opacity:.9;
   will-change:transform;
-  animation:golden-mist-drift 28s ease-in-out infinite alternate;
+
+  animation:golden-mist-drift 48s
+    cubic-bezier(.45,.05,.55,.95) infinite;
 }
 
 .horror-symbol{
@@ -876,13 +882,45 @@ header.nav-hidden{
 
 @keyframes golden-mist-drift{
   0%{
-    transform:translate3d(-5%,-2%,0) scale(1);
+    transform:
+      translate3d(0,5vh,0)
+      scale(1);
   }
-  50%{
-    transform:translate3d(5%,-5%,0) scale(1.08);
+
+  18%{
+    transform:
+      translate3d(58vw,-2vh,0)
+      scale(1.08);
   }
+
+  35%{
+    transform:
+      translate3d(78vw,32vh,0)
+      scale(.96);
+  }
+
+  52%{
+    transform:
+      translate3d(55vw,72vh,0)
+      scale(1.1);
+  }
+
+  70%{
+    transform:
+      translate3d(10vw,66vh,0)
+      scale(1);
+  }
+
+  86%{
+    transform:
+      translate3d(-5vw,30vh,0)
+      scale(1.07);
+  }
+
   100%{
-    transform:translate3d(-2%,5%,0) scale(1.04);
+    transform:
+      translate3d(0,5vh,0)
+      scale(1);
   }
 }
 
