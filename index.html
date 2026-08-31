@@ -3,7 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Between the Walls — a film by [Director Name]</title>
+<script>
+(function() {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  function returnSiteToTop() {
+    const page = document.documentElement;
+    const previousBehavior = page.style.scrollBehavior;
+
+    page.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    page.style.scrollBehavior = previousBehavior;
+  }
+
+  window.addEventListener(
+    'DOMContentLoaded',
+    returnSiteToTop,
+    {once:true}
+  );
+
+  window.addEventListener('load', function() {
+    returnSiteToTop();
+    requestAnimationFrame(returnSiteToTop);
+  }, {once:true});
+
+  window.addEventListener('pageshow', returnSiteToTop);
+})();
+</script>
+<title>Between the Walls — a film by Filip Dimitrievski</title>
 <meta name="description" content="Меѓу Ѕидовите / Between the Walls — official site. A psychological drama. In cinemas and festivals.">
 
 <!--
