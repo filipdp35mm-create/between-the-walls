@@ -312,6 +312,12 @@
       cursor:pointer;
     }
 
+    .terms-row a{
+  color:var(--gold);
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+
     .primary-button{
       position:relative;
       width:100%;
@@ -580,7 +586,12 @@
 
           <div class="terms-row">
             <input id="terms" name="terms" type="checkbox" required>
-            <label for="terms">I agree to the Terms of Use and Privacy Notice.</label>
+            <label for="terms">
+  I agree to the
+  <a href="terms.html" target="_blank" rel="noopener">Terms of Use</a>
+  and acknowledge the
+  <a href="privacy.html" target="_blank" rel="noopener">Privacy Notice</a>.
+</label>
           </div>
 
           <button class="primary-button" id="registerButton" type="submit">Create account</button>
