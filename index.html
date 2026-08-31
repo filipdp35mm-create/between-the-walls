@@ -677,7 +677,44 @@ backdrop-filter:blur(5px);
     color:var(--muted);
     margin-bottom:6px;
   }
-  .credit-name{font-family:var(--serif);font-size:1.2rem;}
+  .credit-name{
+  font-family:var(--serif);
+  font-size:1.2rem;
+}
+
+.credit-name a{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  transition:
+    color .3s ease,
+    transform .3s ease,
+    text-shadow .3s ease;
+}
+
+.credit-name a::after{
+  content:'↗';
+  font-family:var(--sans);
+  font-size:.6em;
+  color:#e2bb68;
+  opacity:0;
+  transform:translate(-4px,3px);
+  transition:
+    opacity .3s ease,
+    transform .3s ease;
+}
+
+.credit-name a:hover{
+  color:#e2bb68;
+  transform:translateX(3px);
+  text-shadow:0 0 12px rgba(226,187,104,.25);
+}
+
+.credit-name a:hover::after{
+  opacity:1;
+  transform:translate(0,0);
+}
+
 
   /* ---------- PRESS ---------- */
   .press-grid{
@@ -719,42 +756,195 @@ backdrop-filter:blur(5px);
     max-width:52ch;
   }
 
-  /* ---------- CONTACT / FOOTER ---------- */
-  footer{
-    padding:90px clamp(20px,6vw,80px) 50px;
-    border-top:1px solid var(--line);
-    margin-top:40px;
-  }
-  .footer-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:40px;
-    max-width:1180px;
-    margin:0 auto 70px;
-  }
-  @media (max-width:700px){.footer-grid{grid-template-columns:1fr;gap:34px;}}
+/* ---------- CONTACT / FOOTER ---------- */
+footer{
+  position:relative;
+  overflow:hidden;
+  padding:48px clamp(20px,6vw,80px) 22px;
+  margin-top:18px;
+  border-top:1px solid rgba(226,187,104,.18);
 
-  .footer-col .eyebrow{margin-bottom:14px;}
-  .footer-col p, .footer-col a{
-    font-size:0.9rem;
-    color:#cfc9c1;
-    display:block;
-    margin-bottom:6px;
+  background:linear-gradient(
+    180deg,
+    rgba(2,2,2,.15),
+    rgba(12,5,3,.78)
+  );
+}
+
+footer::before{
+  content:'';
+  position:absolute;
+  top:-1px;
+  left:50%;
+  width:min(280px,40vw);
+  height:1px;
+
+  background:linear-gradient(
+    90deg,
+    transparent,
+    #761111,
+    #d3aa55,
+    #761111,
+    transparent
+  );
+
+  opacity:.85;
+  transform:translateX(-50%) scaleX(1);
+  transition:
+    transform 1.3s cubic-bezier(.2,.8,.2,1),
+    opacity 1.3s ease;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:minmax(240px,1.4fr) 1fr 1fr;
+  align-items:start;
+  gap:clamp(28px,5vw,70px);
+  max-width:1180px;
+  margin:0 auto 28px;
+}
+
+.footer-logo{
+  display:block;
+  width:clamp(170px,18vw,230px);
+  height:auto;
+}
+
+.footer-tagline{
+  margin-top:9px;
+  color:var(--muted);
+  font-size:.68rem;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+
+.footer-col .eyebrow{
+  display:block;
+  margin-bottom:8px;
+}
+
+.footer-col a{
+  display:inline-flex;
+  color:#cfc9c1;
+  font-size:.82rem;
+  margin-right:16px;
+  overflow-wrap:anywhere;
+
+  transition:
+    color .3s ease,
+    transform .3s ease,
+    text-shadow .3s ease;
+}
+
+.footer-col a:hover{
+  color:#e2bb68;
+  transform:translateY(-2px);
+  text-shadow:0 0 12px rgba(226,187,104,.32);
+}
+
+.footer-socials{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 16px;
+}
+
+.footer-bottom{
+  max-width:1180px;
+  margin:0 auto;
+  padding-top:17px;
+  border-top:1px solid rgba(255,255,255,.07);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+
+  color:var(--muted);
+  font-size:.66rem;
+  letter-spacing:.06em;
+}
+
+/* Footer scroll reveal */
+.footer-reveal{
+  opacity:0;
+  filter:blur(6px);
+  transform:translate3d(0,35px,0);
+
+  transition:
+    opacity 1s ease,
+    filter 1s ease,
+    transform 1s cubic-bezier(.2,.8,.2,1);
+}
+
+.footer-reveal::before{
+  opacity:0;
+  transform:translateX(-50%) scaleX(0);
+}
+
+.footer-reveal .footer-grid > *,
+.footer-reveal .footer-bottom{
+  opacity:0;
+  transform:translateY(16px);
+
+  transition:
+    opacity .8s ease,
+    transform .8s cubic-bezier(.2,.8,.2,1);
+}
+
+.footer-reveal.footer-visible{
+  opacity:1;
+  filter:blur(0);
+  transform:translate3d(0,0,0);
+}
+
+.footer-reveal.footer-visible::before{
+  opacity:.85;
+  transform:translateX(-50%) scaleX(1);
+}
+
+.footer-reveal.footer-visible .footer-grid > *,
+.footer-reveal.footer-visible .footer-bottom{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.footer-reveal.footer-visible .footer-grid > *:nth-child(1){
+  transition-delay:.08s;
+}
+
+.footer-reveal.footer-visible .footer-grid > *:nth-child(2){
+  transition-delay:.16s;
+}
+
+.footer-reveal.footer-visible .footer-grid > *:nth-child(3){
+  transition-delay:.24s;
+}
+
+.footer-reveal.footer-visible .footer-bottom{
+  transition-delay:.32s;
+}
+
+@media (max-width:700px){
+  footer{
+    padding:38px 20px 20px;
   }
-  .footer-col a:hover{color:var(--fg);}
+
+  .footer-grid{
+    grid-template-columns:1fr 1fr;
+    gap:26px 20px;
+    margin-bottom:24px;
+  }
+
+  .footer-brand{
+    grid-column:1 / -1;
+  }
 
   .footer-bottom{
-    max-width:1180px;
-    margin:0 auto;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:14px;
-    font-size:0.72rem;
-    color:var(--muted);
-    letter-spacing:0.04em;
+    align-items:flex-start;
+    flex-direction:column;
   }
+}
 
   .footer-title{
     font-family:var(--serif);
@@ -1499,7 +1689,6 @@ html{
     <a href="#gallery">GALLERY</a>
     <a href="#festivals">FESTIVALS</a>
     <a href="#credits">CREDITS</a>
-    <a href="#press">PRESS</a>
   </nav>
 
   <div class="nav-right">
@@ -1694,74 +1883,111 @@ punishment is long, precise, and merciless.</p>
   <h2 class="section-title">Made by</h2>
 
   <div class="credits-grid">
-    <div class="credit-row"><div class="credit-role">Director</div><div class="credit-name">Filip Dimitrievski</div></div>
-    <div class="credit-row"><div class="credit-role">Writer</div><div class="credit-name">Filip Dimitrievski</div></div>
-    <div class="credit-row"><div class="credit-role">Producer</div><div class="credit-name">Filip Dimitrievski</div></div>
-    <div class="credit-row"><div class="credit-role">Producer</div><div class="credit-name">Anastasija Gjorgjevska</div></div>
-    <div class="credit-row"><div class="credit-role">Director of Photography</div><div class="credit-name">Eva Bozhinovska</div></div>
-    <div class="credit-row"><div class="credit-role">Editor</div><div class="credit-name">Filip Dimitrievski</div></div>
-    <div class="credit-row"><div class="credit-role">Lead Cast</div><div class="credit-name">Boban Aleksoski</div></div>
-    <div class="credit-row"><div class="credit-role">Lead Cast</div><div class="credit-name">Marina Gocevska</div></div>
-  </div>
-</section>
-
-<hr class="rule">
-
-<!-- ================= PRESS / EPK ================= -->
-<section id="press">
-  <span class="eyebrow">Press / EPK</span>
-  <h2 class="section-title">For journalists & programmers</h2>
-
-  <div class="press-grid">
-    <div class="poster-frame">
-      <!-- Replace with: <img src="images/poster.jpg" alt="Between the Walls poster"> -->
-      <div class="g-ph"></div>
-    </div>
-
-    <div>
-      <ul class="press-links">
-        <li>
-          <span class="pl-label">Press Kit (PDF)</span>
-          <span class="pl-meta">Coming soon</span>
-        </li>
-        <li>
-          <span class="pl-label">High-res Stills (ZIP)</span>
-          <span class="pl-meta">Coming soon</span>
-        </li>
-        <li>
-          <span class="pl-label">Poster (Print quality)</span>
-          <span class="pl-meta">Coming soon</span>
-        </li>
-      </ul>
-      <p class="press-note">For interview requests, screener access, or festival submissions, contact us directly using the details below.</p>
-    </div>
+    <div class="credit-row"><div class="credit-role">Director</div><div class="credit-name">
+  <a href="https://www.instagram.com/filipdimitrievski__/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Filip Dimitrievski
+  </a>
+</div></div>
+    <div class="credit-row"><div class="credit-role">Writer</div><div class="credit-name">
+  <a href="https://www.instagram.com/filipdimitrievski__/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Filip Dimitrievski
+  </a>
+</div></div>
+    <div class="credit-row"><div class="credit-role">Producer</div><div class="credit-name">
+  <a href="https://www.instagram.com/filipdimitrievski__/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Filip Dimitrievski
+  </a>
+</div></div>
+    <div class="credit-row"><div class="credit-role">Producer</div><div class="credit-name">
+  <a href="https://www.instagram.com/anastasijagjorgjievskaa/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Anastasija Gjorgjevska
+  </a>
+</div></div>
+    <div class="credit-row"><div class="credit-role">Director of Photography</div><div class="credit-name">
+  <a href="https://www.instagram.com/neznam_be_brat_/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Eva Bozhinovska
+  </a>
+</div></div>
+    <div class="credit-row"><div class="credit-role">Editor</div><div class="credit-name">
+  <a href="https://www.instagram.com/filipdimitrievski__/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Filip Dimitrievski
+  </a>
+</div></div>
+    <div class="credit-row"><div class="credit-role">Lead Cast</div><div class="credit-name">
+  <a href="https://www.instagram.com/aleksoskiboban/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Boban Aleksoski
+  </a>
+</div></div>
+    <div class="credit-row"><div class="credit-role">Lead Cast</div><div class="credit-name">
+  <a href="https://www.instagram.com/g_marri_na/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Marina Gocevska
+  </a>
+</div></div>
   </div>
 </section>
 
 <!-- ================= CONTACT / FOOTER ================= -->
 <footer id="contact">
   <div class="footer-grid">
-    <div class="footer-col">
-      <div class="footer-title">Меѓу Ѕидовите</div>
-      <p style="color:var(--muted);">Between the Walls</p>
+
+    <div class="footer-brand">
+      <a href="#top" aria-label="Return to the top">
+        <img src="images/logo.png"
+             alt="Between the Walls"
+             class="footer-logo">
+      </a>
+
+      <p class="footer-tagline">
+        A Cosmic Films production
+      </p>
     </div>
 
     <div class="footer-col">
       <span class="eyebrow">Contact</span>
-      <a href="mailto:[email@example.com]">[email@example.com]</a>
-      <a href="tel:+000000000">[+000 00 000 000]</a>
+      <a href="mailto:office@filipdimitrievski.com">
+        office@filipdimitrievski.com
+      </a>
     </div>
 
     <div class="footer-col">
       <span class="eyebrow">Follow</span>
-      <a href="#">Instagram</a>
-      <a href="#">Facebook</a>
+
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/megjuzidovite_shortfilm/"
+   target="_blank"
+   rel="noopener noreferrer">
+  Instagram
+</a>
+
+<a href="https://www.tiktok.com/@betweenthewalls_film"
+   target="_blank"
+   rel="noopener noreferrer">
+  TikTok
+</a>
+      </div>
     </div>
+
   </div>
 
   <div class="footer-bottom">
-    <span>© [2026] [Production Company Name]. All rights reserved.</span>
-    <span>Site by [Your Name / Studio]</span>
+    <span>© 2026 Cosmic Films. All rights reserved.</span>
+    <span>Written and directed by Filip Dimitrievski</span>
   </div>
 </footer>
 
@@ -2251,6 +2477,43 @@ if (
       document.body.appendChild(effect);
     }, 90);
   });
+})();
+</script>
+
+<script>
+(function() {
+  const siteFooter = document.getElementById('contact');
+
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  if (
+    !siteFooter ||
+    reducedMotion ||
+    !('IntersectionObserver' in window)
+  ) {
+    return;
+  }
+
+  siteFooter.classList.add('footer-reveal');
+
+  const footerObserver = new IntersectionObserver(
+    function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+
+        siteFooter.classList.add('footer-visible');
+        footerObserver.unobserve(siteFooter);
+      });
+    },
+    {
+      threshold:.18,
+      rootMargin:'0px 0px -5% 0px'
+    }
+  );
+
+  footerObserver.observe(siteFooter);
 })();
 </script>
 
