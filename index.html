@@ -1731,7 +1731,7 @@ html{
       wire it to your game/experience, just replace href="#" with your
       real link, e.g. href="https://yourgame.example.com"
     -->
-    <a href="#" class="play-link" aria-label="Play">PLAY <span class="tri">▷</span></a>
+    <a href="register.html" class="play-link" aria-label="Play">PLAY <span class="tri">▷</span></a>
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">MENU</button>
   </div>
 </header>
@@ -1788,7 +1788,7 @@ punishment is long, precise, and merciless.</p>
       <li><span class="label">Director</span><span class="value">Filip Dimitrievski</span></li>
       <li><span class="label">Country</span><span class="value">North Macedonia</span></li>
       <li><span class="label">Language</span><span class="value">Macedonian</span></li>
-      <li><span class="label">Runtime</span><span class="value">19 min</span></li>
+      <li><span class="label">Runtime</span><span class="value">16 min</span></li>
       <li><span class="label">Year</span><span class="value">2026</span></li>
       <li><span class="label">Genre</span><span class="value">Psychological Drama</span></li>
     </ul>
@@ -2543,6 +2543,299 @@ if (
   );
 
   footerObserver.observe(siteFooter);
+})();
+</script>
+
+<script>
+(function() {
+  let introAudioContext = null;
+  let chimeHasPlayed = false;
+  let introHasFinished = false;
+
+  function getIntroAudioContext() {
+    if (introAudioContext) {
+      return introAudioContext;
+    }
+
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) return null;
+
+    introAudioContext = new AudioContextClass();
+    return introAudioContext;
+  }
+
+  /* Any normal interaction during the logos unlocks audio */
+  function prepareIntroAudio() {
+    if (introHasFinished) return;
+
+    const context = getIntroAudioContext();
+
+    if (context && context.state === 'suspended') {
+      context.resume().catch(function() {});
+    }
+  }
+
+  document.addEventListener(
+    'pointerdown',
+    prepareIntroAudio,
+    {capture:true, once:true}
+  );
+
+  document.addEventListener(
+    'keydown',
+    prepareIntroAudio,
+    {capture:true, once:true}
+  );
+
+  function playBrightIntroChime() {
+    if (chimeHasPlayed) return;
+
+    chimeHasPlayed = true;
+    introHasFinished = true;
+
+    const context = getIntroAudioContext();
+    if (!context) return;
+
+    function createChime() {
+      if (context.state !== 'running') return;
+
+      const now = context.currentTime + .02;
+
+      const toneBus = context.createGain();
+      const brightness = context.createBiquadFilter();
+      const master = context.createGain();
+      const dry = context.createGain();
+      const wet = context.createGain();
+      const reverb = context.createConvolver();
+
+      brightness.type = 'highpass';
+      brightness.frequency.value = 320;
+
+      master.gain.setValueAtTime(.0001, now);
+      master.gain.exponentialRampToValueAtTime(
+        .075,
+        now + .06
+      );
+      master.gain.exponentialRampToValueAtTime(
+        .0001,
+        now + 1.75
+      );
+
+      dry.gain.value = .72;
+      wet.gain.value = .3;
+
+      /* Create a soft atmospheric reverb */
+      const reverbLength =
+        Math.floor(context.sampleRate * 1.4);
+
+      const impulse = context.createBuffer(
+        2,
+        reverbLength,
+        context.sampleRate
+      );
+
+      for (let channel = 0; channel < 2; channel++) {
+        const channelData =
+          impulse.getChannelData(channel);
+
+        for (let i = 0; i < reverbLength; i++) {
+          channelData[i] =
+            (Math.random() * 2 - 1) *
+            Math.pow(1 - i / reverbLength, 3.2);
+        }
+      }
+
+      reverb.buffer = impulse;
+
+      toneBus.connect(brightness);
+      brightness.connect(master);
+
+      master.connect(dry);
+      master.connect(reverb);
+
+      dry.connect(context.destination);
+      reverb.connect(wet);
+      wet.connect(context.destination);
+
+      /* Bright open E–B–E chime */
+      const notes = [
+        {frequency:659.25, delay:0, level:.46},
+        {frequency:987.77, delay:.09, level:.3},
+        {frequency:1318.51, delay:.18, level:.17}
+      ];
+
+      notes.forEach(function(note, index) {
+        const oscillator = context.createOscillator();
+        const noteGain = context.createGain();
+        const startTime = now + note.delay;
+
+        oscillator.type = 'sine';
+        oscillator.frequency.value = note.frequency;
+        oscillator.detune.value = (index - 1) * 3;
+
+        noteGain.gain.setValueAtTime(.0001, startTime);
+        noteGain.gain.exponentialRampToValueAtTime(
+          note.level,
+          startTime + .025
+        );
+        noteGain.gain.exponentialRampToValueAtTime(
+          .0001,
+          startTime + 1.35
+        );
+
+        oscillator.connect(noteGain);
+        noteGain.connect(toneBus);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + 1.4);
+      });
+
+      setTimeout(function() {
+        if (context.state !== 'closed') {
+          context.close().catch(function() {});
+        }
+
+        if (introAudioContext === context) {
+          introAudioContext = null;
+        }
+      }, 2800);
+    }
+
+    if (context.state === 'running') {
+      createChime();
+      return;
+    }
+
+    /* Best-effort autoplay attempt */
+    context.resume()
+      .then(createChime)
+      .catch(function() {
+        /* Browser blocked it—remain silent */
+      });
+  }
+
+  /* Play exactly when the intro begins fading away */
+  const introSoundObserver = new MutationObserver(
+    function() {
+      if (
+        document.body.classList.contains(
+          'intro-finished'
+        )
+      ) {
+        introSoundObserver.disconnect();
+        playBrightIntroChime();
+      }
+    }
+  );
+
+  introSoundObserver.observe(document.body, {
+    attributes:true,
+    attributeFilter:['class']
+  });
+
+  if (
+    document.body.classList.contains('intro-finished')
+  ) {
+    introSoundObserver.disconnect();
+    playBrightIntroChime();
+  }
+})();
+</script>
+
+<script>
+(function() {
+  const AudioClass =
+    window.AudioContext || window.webkitAudioContext;
+
+  if (!AudioClass) return;
+
+  let audioContext;
+  let soundPlayed = false;
+
+  function getAudioContext() {
+    if (!audioContext) {
+      audioContext = new AudioClass();
+    }
+
+    return audioContext;
+  }
+
+  /* Clicking anywhere during the logos unlocks sound */
+document.addEventListener('pointerdown', function() {
+  if (
+    document.body.classList.contains('intro-finished')
+  ) {
+    return;
+  }
+
+  const context = getAudioContext();
+
+  if (context.state === 'suspended') {
+    context.resume().catch(function() {});
+  }
+}, {once:true});
+
+  function playChime() {
+    if (soundPlayed) return;
+    soundPlayed = true;
+
+    const context = getAudioContext();
+
+    function createSound() {
+      const notes = [
+        {frequency:659.25, volume:.06},
+        {frequency:987.77, volume:.04},
+        {frequency:1318.51, volume:.025}
+      ];
+
+      const now = context.currentTime;
+
+      notes.forEach(function(note, index) {
+        const oscillator = context.createOscillator();
+        const volume = context.createGain();
+        const start = now + index * .09;
+
+        oscillator.type = 'sine';
+        oscillator.frequency.value = note.frequency;
+
+        volume.gain.setValueAtTime(.0001, start);
+        volume.gain.exponentialRampToValueAtTime(
+          note.volume,
+          start + .03
+        );
+        volume.gain.exponentialRampToValueAtTime(
+          .0001,
+          start + 1.3
+        );
+
+        oscillator.connect(volume);
+        volume.connect(context.destination);
+
+        oscillator.start(start);
+        oscillator.stop(start + 1.35);
+      });
+    }
+
+if (context.state === 'running') {
+  createSound();
+}
+  }
+
+  const observer = new MutationObserver(function() {
+    if (
+      document.body.classList.contains('intro-finished')
+    ) {
+      observer.disconnect();
+      playChime();
+    }
+  });
+
+  observer.observe(document.body, {
+    attributes:true,
+    attributeFilter:['class']
+  });
 })();
 </script>
 

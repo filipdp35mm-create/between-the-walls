@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#030303">
+  <title>Enter — Between the Walls</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#030303;
+      --panel:rgba(8,8,7,.88);
+      --fg:#eee9df;
+      --muted:#999188;
+      --gold:#ddbd71;
+      --gold-soft:rgba(221,189,113,.18);
+      --red:#62100d;
+      --line:rgba(238,233,223,.16);
+      --serif:'Cormorant Garamond',Georgia,serif;
+      --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    html{min-height:100%;background:var(--bg)}
+
+    body{
+      min-height:100svh;
+      color:var(--fg);
+      background:var(--bg);
+      font-family:var(--sans);
+      font-weight:300;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:'';
+      position:fixed;
+      inset:0;
+      z-index:-3;
+      background:
+        linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.7) 48%,rgba(0,0,0,.88) 100%),
+        linear-gradient(0deg,rgba(0,0,0,.78),transparent 55%),
+        url('images/hero.jpg') center/cover no-repeat;
+      transform:scale(1.025);
+    }
+
+    body::after{
+      content:'';
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 68% 38%,rgba(167,119,31,.13),transparent 31%),
+        radial-gradient(circle at 15% 72%,rgba(92,5,5,.13),transparent 30%);
+      animation:atmosphere 16s ease-in-out infinite alternate;
+    }
+
+    a{color:inherit}
+
+    button,input,select{font:inherit}
+
+    button{color:inherit}
+
+    .back-link{
+      position:fixed;
+      top:clamp(20px,4vw,42px);
+      left:clamp(20px,4vw,58px);
+      z-index:4;
+      color:var(--muted);
+      text-decoration:none;
+      font-size:10px;
+      font-weight:500;
+      letter-spacing:.18em;
+      transition:color .25s ease,transform .25s ease;
+    }
+
+    .back-link:hover,
+    .back-link:focus-visible{
+      color:var(--gold);
+      transform:translateX(-3px);
+    }
+
+    .auth-shell{
+      width:min(1180px,calc(100% - 40px));
+      min-height:100svh;
+      margin:auto;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(360px,480px);
+      align-items:center;
+      gap:clamp(50px,8vw,130px);
+      padding:100px 0 60px;
+    }
+
+    .story-panel{
+      max-width:560px;
+      animation:reveal .9s .1s both cubic-bezier(.22,1,.36,1);
+    }
+
+    .film-logo{
+      width:min(390px,85%);
+      height:auto;
+      display:block;
+      margin-bottom:46px;
+      filter:drop-shadow(0 4px 22px rgba(0,0,0,.8));
+    }
+
+    .eyebrow{
+      display:block;
+      color:var(--gold);
+      margin-bottom:18px;
+      font-size:10px;
+      font-weight:500;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+    }
+
+    .story-title{
+      max-width:520px;
+      font-family:var(--serif);
+      font-size:clamp(42px,5.5vw,76px);
+      font-weight:400;
+      line-height:.94;
+      letter-spacing:-.025em;
+      text-wrap:balance;
+    }
+
+    .story-copy{
+      max-width:430px;
+      margin-top:27px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.8;
+    }
+
+    .experience-brief{
+      max-width:520px;
+      margin-top:34px;
+      padding-top:25px;
+      border-top:1px solid var(--line);
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:28px;
+    }
+
+    .brief-block h2{
+      color:var(--gold);
+      font-size:9px;
+      font-weight:500;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+
+    .brief-block p{
+      color:#aaa29a;
+      font-size:11px;
+      line-height:1.7;
+    }
+
+    .reward-list{
+      list-style:none;
+      display:grid;
+      gap:7px;
+    }
+
+    .reward-list li{
+      position:relative;
+      padding-left:14px;
+      color:#c6beb4;
+      font-size:11px;
+      line-height:1.55;
+    }
+
+    .reward-list li::before{
+      content:'+';
+      position:absolute;
+      left:0;
+      color:var(--gold);
+    }
+
+    .reward-note{
+      margin-top:10px;
+      color:#706a63;
+      font-size:9px;
+      line-height:1.55;
+    }
+
+    .auth-card{
+      position:relative;
+      padding:clamp(28px,4vw,48px);
+      border:1px solid var(--line);
+      background:linear-gradient(145deg,rgba(14,13,11,.94),rgba(5,5,5,.92));
+      box-shadow:0 35px 90px rgba(0,0,0,.58);
+      backdrop-filter:blur(18px);
+      animation:reveal .9s .25s both cubic-bezier(.22,1,.36,1);
+    }
+
+    .auth-card::before{
+      content:'';
+      position:absolute;
+      top:-1px;
+      left:15%;
+      width:70%;
+      height:1px;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent);
+      opacity:.65;
+    }
+
+    .card-kicker{
+      color:var(--gold);
+      font-size:9px;
+      font-weight:500;
+      letter-spacing:.24em;
+      text-transform:uppercase;
+    }
+
+    .card-title{
+      margin-top:8px;
+      font-family:var(--serif);
+      font-size:clamp(34px,4vw,46px);
+      font-weight:500;
+      line-height:1.05;
+    }
+
+    .card-intro{
+      margin:10px 0 28px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.65;
+    }
+
+    .field-grid{
+      display:grid;
+      grid-template-columns:1fr 118px;
+      gap:16px;
+    }
+
+    .field{margin-bottom:17px}
+
+    label{
+      display:block;
+      margin-bottom:7px;
+      color:#bbb3a9;
+      font-size:9px;
+      font-weight:500;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+    }
+
+    input,
+    select{
+      width:100%;
+      min-height:48px;
+      border:1px solid var(--line);
+      border-radius:0;
+      outline:0;
+      background:rgba(0,0,0,.34);
+      color:var(--fg);
+      padding:0 14px;
+      font-size:13px;
+      transition:border-color .25s ease,box-shadow .25s ease,background .25s ease;
+    }
+
+    select{
+      cursor:pointer;
+      color-scheme:dark;
+    }
+
+    input::placeholder{color:#625e59}
+
+    input:focus,
+    select:focus{
+      border-color:rgba(221,189,113,.68);
+      background:rgba(11,9,5,.64);
+      box-shadow:0 0 0 3px rgba(221,189,113,.07);
+    }
+
+    .terms-row{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin:2px 0 22px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.55;
+    }
+
+    .terms-row input{
+      width:15px;
+      min-height:15px;
+      height:15px;
+      margin-top:2px;
+      accent-color:#b89445;
+      flex:0 0 auto;
+    }
+
+    .terms-row label{
+      margin:0;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:300;
+      letter-spacing:0;
+      text-transform:none;
+      cursor:pointer;
+    }
+
+    .primary-button{
+      position:relative;
+      width:100%;
+      min-height:50px;
+      overflow:hidden;
+      border:1px solid rgba(221,189,113,.72);
+      background:rgba(31,23,8,.8);
+      color:#f3d88f;
+      cursor:pointer;
+      font-size:10px;
+      font-weight:500;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      transition:transform .25s ease,background .25s ease,box-shadow .25s ease;
+    }
+
+    .primary-button::after{
+      content:'';
+      position:absolute;
+      inset:-100% auto -100% -30%;
+      width:22%;
+      transform:rotate(17deg);
+      background:linear-gradient(90deg,transparent,rgba(255,239,188,.55),transparent);
+      transition:left .6s ease;
+    }
+
+    .primary-button:hover:not(:disabled),
+    .primary-button:focus-visible:not(:disabled){
+      transform:translateY(-2px);
+      background:rgba(53,38,9,.9);
+      box-shadow:0 0 28px rgba(221,189,113,.2);
+    }
+
+    .primary-button:hover::after{left:120%}
+
+    .primary-button:disabled{
+      cursor:wait;
+      opacity:.55;
+    }
+
+    .switch-row{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      margin-top:20px;
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .text-button{
+      border:0;
+      background:none;
+      color:var(--gold);
+      cursor:pointer;
+      font-size:11px;
+      text-decoration:underline;
+      text-decoration-color:rgba(221,189,113,.35);
+      text-underline-offset:3px;
+    }
+
+    .message{
+      display:none;
+      margin:0 0 18px;
+      border-left:2px solid var(--gold);
+      background:var(--gold-soft);
+      color:#e8d6a7;
+      padding:11px 13px;
+      font-size:11px;
+      line-height:1.55;
+    }
+
+    .message.visible{display:block}
+
+    .message.error{
+      border-left-color:#9e312b;
+      background:rgba(98,16,13,.2);
+      color:#e4aaa5;
+    }
+
+    .account-view[hidden],
+    form[hidden]{display:none}
+
+    .account-view{
+      text-align:center;
+      padding:20px 0 4px;
+    }
+
+    .account-mark{
+      width:56px;
+      height:56px;
+      margin:0 auto 22px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(221,189,113,.55);
+      border-radius:50%;
+      color:var(--gold);
+      box-shadow:0 0 32px rgba(221,189,113,.12);
+      font-family:var(--serif);
+      font-size:24px;
+    }
+
+    .account-view h2{
+      font-family:var(--serif);
+      font-size:38px;
+      font-weight:500;
+    }
+
+    .account-view p{
+      margin:10px auto 28px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .account-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .secondary-button{
+      min-height:46px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.25);
+      color:#b9b1a8;
+      cursor:pointer;
+      font-size:9px;
+      font-weight:500;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      text-decoration:none;
+      display:grid;
+      place-items:center;
+      transition:border-color .25s ease,color .25s ease;
+    }
+
+    .secondary-button:hover,
+    .secondary-button:focus-visible{
+      border-color:rgba(221,189,113,.5);
+      color:var(--gold);
+    }
+
+    :focus-visible{
+      outline:1px solid var(--gold);
+      outline-offset:3px;
+    }
+
+    @keyframes reveal{
+      from{opacity:0;transform:translateY(24px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    @keyframes atmosphere{
+      from{transform:translate3d(-2%,-1%,0) scale(1.05)}
+      to{transform:translate3d(2%,1.5%,0) scale(1.08)}
+    }
+
+    @media (max-width:860px){
+      .auth-shell{
+        grid-template-columns:1fr;
+        width:min(560px,calc(100% - 32px));
+        gap:42px;
+        padding-top:105px;
+      }
+
+      .story-panel{text-align:center;margin:auto}
+      .film-logo{width:min(320px,78%);margin:0 auto 28px}
+      .story-copy{margin:20px auto 0}
+      .story-title{font-size:clamp(42px,11vw,64px)}
+      .experience-brief{margin:30px auto 0;text-align:left}
+    }
+
+    @media (max-width:480px){
+      .auth-shell{width:100%;padding:100px 16px 24px}
+      .auth-card{padding:27px 20px}
+      .field-grid{grid-template-columns:1fr}
+      .field-grid .field:last-child{margin-top:-1px}
+      .story-copy{display:none}
+      .experience-brief{grid-template-columns:1fr;gap:20px;padding-top:20px}
+      .brief-block p,.reward-list li{font-size:10px}
+      .account-actions{grid-template-columns:1fr}
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        scroll-behavior:auto!important;
+        transition-duration:.01ms!important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="back-link" href="index.html">← RETURN TO FILM</a>
+
+  <main class="auth-shell">
+    <section class="story-panel" aria-labelledby="storyTitle">
+      <img class="film-logo" src="images/logo.png" alt="Between the Walls">
+      <span class="eyebrow">The experience</span>
+      <h1 class="story-title" id="storyTitle">The walls remember everyone.</h1>
+      <p class="story-copy">Create your identity before entering. What happens beyond this point belongs to you.</p>
+
+      <div class="experience-brief" aria-label="Game explanation and rewards">
+        <div class="brief-block">
+          <h2>How the investigation works</h2>
+          <p>Your case is linked to five specific posters hidden somewhere among more than 25 placed across Skopje. Poster 01 starts your case; from there, the evidence and clues lead you toward the other four assigned posters. Scanning posters that are not bound to your account will not advance your investigation. Your progress and discoveries are saved to this account.</p>
+        </div>
+
+        <div class="brief-block">
+          <h2>Complete the case</h2>
+          <ul class="reward-list">
+            <li>Exclusive trailer access</li>
+            <li>Soundtrack access</li>
+            <li>Free entry to the Skopje festival screening</li>
+            <li>1 month free on Kadar</li>
+          </ul>
+          <p class="reward-note">Screening reward becomes available once the Skopje screening is officially confirmed and remains subject to venue/festival availability.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-card" aria-labelledby="authTitle">
+      <div id="formView">
+        <span class="card-kicker" id="cardKicker">New visitor</span>
+        <h2 class="card-title" id="authTitle">Create your account</h2>
+        <p class="card-intro" id="cardIntro">Your identity follows you through the experience.</p>
+
+        <div class="message" id="message" role="status" aria-live="polite"></div>
+
+        <form id="registerForm">
+          <div class="field-grid">
+            <div class="field">
+              <label for="fullName">Name</label>
+              <input id="fullName" name="fullName" type="text" autocomplete="name" minlength="2" maxlength="80" placeholder="Your name" required>
+            </div>
+
+            <div class="field">
+              <label for="age">Age</label>
+              <select id="age" name="age" required>
+                <option value="" selected disabled>Select</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="displayName">Display name</label>
+            <input id="displayName" name="displayName" type="text" autocomplete="nickname" minlength="2" maxlength="30" placeholder="How others will see you" required>
+          </div>
+
+          <div class="field">
+            <label for="registerEmail">Email</label>
+            <input id="registerEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          </div>
+
+          <div class="field">
+            <label for="registerPassword">Password</label>
+            <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
+          </div>
+
+          <div class="terms-row">
+            <input id="ageConfirm" name="ageConfirm" type="checkbox" required>
+            <label for="ageConfirm"><strong>I confirm that I am 18 years of age or older.</strong> This experience contains mature fictional themes and is available only to adults.</label>
+          </div>
+
+          <div class="terms-row">
+            <input id="terms" name="terms" type="checkbox" required>
+            <label for="terms">I agree to the Terms of Use and Privacy Notice.</label>
+          </div>
+
+          <button class="primary-button" id="registerButton" type="submit">Create account</button>
+
+          <div class="switch-row">
+            <span>Already registered?</span>
+            <button class="text-button" id="showLogin" type="button">Log in</button>
+          </div>
+        </form>
+
+        <form id="loginForm" hidden>
+          <div class="field">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          </div>
+
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+          </div>
+
+          <button class="primary-button" id="loginButton" type="submit">Log in</button>
+
+          <div class="switch-row">
+            <span>New visitor?</span>
+            <button class="text-button" id="showRegister" type="button">Create an account</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="account-view" id="accountView" hidden>
+        <div class="account-mark" aria-hidden="true">✓</div>
+        <span class="card-kicker">Access granted</span>
+        <h2 id="welcomeName">Welcome</h2>
+        <p>Your account is ready. The experience will begin here.</p>
+        <div class="account-actions">
+          <a class="secondary-button" href="index.html">Return to film</a>
+          <button class="secondary-button" id="logoutButton" type="button">Log out</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const SUPABASE_URL = 'https://bxyapqagxlpfthlzfmgg.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_u4gZiLY5JsVPzZ5uEMgkGA_jjwu-CBF';
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth:{
+          persistSession:true,
+          autoRefreshToken:true,
+          detectSessionInUrl:true
+        }
+      }
+    );
+
+    const registerForm = document.querySelector('#registerForm');
+    const loginForm = document.querySelector('#loginForm');
+    const formView = document.querySelector('#formView');
+    const accountView = document.querySelector('#accountView');
+    const message = document.querySelector('#message');
+    const cardKicker = document.querySelector('#cardKicker');
+    const authTitle = document.querySelector('#authTitle');
+    const cardIntro = document.querySelector('#cardIntro');
+    const welcomeName = document.querySelector('#welcomeName');
+    const ageSelect = document.querySelector('#age');
+
+    for(let age = 18; age <= 100; age += 1){
+      const option = document.createElement('option');
+      option.value = String(age);
+      option.textContent = String(age);
+      ageSelect.append(option);
+    }
+
+    function setMode(mode){
+      clearMessage();
+      const loginMode = mode === 'login';
+      registerForm.hidden = loginMode;
+      loginForm.hidden = !loginMode;
+      cardKicker.textContent = loginMode ? 'Returning visitor' : 'New visitor';
+      authTitle.textContent = loginMode ? 'Welcome back' : 'Create your account';
+      cardIntro.textContent = loginMode
+        ? 'Log in to continue your experience.'
+        : 'Your identity follows you through the experience.';
+      document.title = loginMode
+        ? 'Log in — Between the Walls'
+        : 'Enter — Between the Walls';
+      const firstField = loginMode
+        ? document.querySelector('#loginEmail')
+        : document.querySelector('#fullName');
+      firstField.focus();
+    }
+
+    function showMessage(text,error = false){
+      message.textContent = text;
+      message.classList.toggle('error',error);
+      message.classList.add('visible');
+    }
+
+    function clearMessage(){
+      message.textContent = '';
+      message.classList.remove('visible','error');
+    }
+
+    function setBusy(button,busy,busyText){
+      if(busy){
+        button.dataset.label = button.textContent;
+        button.textContent = busyText;
+        button.disabled = true;
+      }else{
+        button.textContent = button.dataset.label || button.textContent;
+        button.disabled = false;
+      }
+    }
+
+    function friendlyError(error,context){
+      const text = (error?.message || '').toLowerCase();
+
+      if(text.includes('invalid login credentials')){
+        return 'The email or password is incorrect.';
+      }
+
+      if(text.includes('already registered')){
+        return 'An account already exists for this email. Try logging in.';
+      }
+
+      if(text.includes('database error') && context === 'register'){
+        return 'That display name may already be taken. Try another one.';
+      }
+
+      if(text.includes('password')){
+        return 'Please choose a stronger password with at least 8 characters.';
+      }
+
+      return context === 'register'
+        ? 'We could not create the account. Check your details and try again.'
+        : 'We could not log you in. Please try again.';
+    }
+
+    async function showAccount(user){
+      let displayName = user?.user_metadata?.display_name || 'Visitor';
+
+      if(user?.id){
+        const {data} = await supabase
+          .from('profiles')
+          .select('display_name')
+          .eq('id',user.id)
+          .maybeSingle();
+
+        if(data?.display_name){
+          displayName = data.display_name;
+        }
+      }
+
+      welcomeName.textContent = `Welcome, ${displayName}`;
+      formView.hidden = true;
+      accountView.hidden = false;
+    }
+
+    registerForm.addEventListener('submit',async(event) => {
+      event.preventDefault();
+      clearMessage();
+
+      const button = document.querySelector('#registerButton');
+      const formData = new FormData(registerForm);
+
+      const age = Number(formData.get('age'));
+
+      if(age < 18 || !formData.get('ageConfirm')){
+        showMessage('You must confirm that you are 18 years of age or older to enter.',true);
+        return;
+      }
+
+      if(!formData.get('terms')){
+        showMessage('You must accept the Terms of Use and Privacy Notice to continue.',true);
+        return;
+      }
+
+      setBusy(button,true,'Creating account…');
+
+      const redirectUrl = new URL('register.html',window.location.href).href;
+
+      const {data,error} = await supabase.auth.signUp({
+        email:String(formData.get('email')).trim(),
+        password:String(formData.get('password')),
+        options:{
+          emailRedirectTo:redirectUrl,
+          data:{
+            full_name:String(formData.get('fullName')).trim(),
+            display_name:String(formData.get('displayName')).trim(),
+            age:Number(formData.get('age')),
+            age_18_plus_confirmed:true,
+            terms_accepted:true
+          }
+        }
+      });
+
+      setBusy(button,false);
+
+      if(error){
+        showMessage(friendlyError(error,'register'),true);
+        return;
+      }
+
+      if(data.session){
+        await showAccount(data.user);
+        return;
+      }
+
+      registerForm.reset();
+      showMessage('Account created. Check your email and confirm your address, then return here to log in.');
+    });
+
+    loginForm.addEventListener('submit',async(event) => {
+      event.preventDefault();
+      clearMessage();
+
+      const button = document.querySelector('#loginButton');
+      const formData = new FormData(loginForm);
+      setBusy(button,true,'Logging in…');
+
+      const {data,error} = await supabase.auth.signInWithPassword({
+        email:String(formData.get('email')).trim(),
+        password:String(formData.get('password'))
+      });
+
+      setBusy(button,false);
+
+      if(error){
+        showMessage(friendlyError(error,'login'),true);
+        return;
+      }
+
+      await showAccount(data.user);
+    });
+
+    document.querySelector('#showLogin').addEventListener('click',() => setMode('login'));
+    document.querySelector('#showRegister').addEventListener('click',() => setMode('register'));
+
+    document.querySelector('#logoutButton').addEventListener('click',async() => {
+      await supabase.auth.signOut();
+      accountView.hidden = true;
+      formView.hidden = false;
+      setMode('login');
+      showMessage('You have been logged out.');
+    });
+
+    const {data:{session}} = await supabase.auth.getSession();
+
+    if(session?.user){
+      await showAccount(session.user);
+    }
+  </script>
+</body>
+</html>
