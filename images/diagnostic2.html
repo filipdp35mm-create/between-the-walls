@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#0a0a0a;color:#0f0;font-family:monospace;}
+  .hero{
+    height:100svh;
+    width:100%;
+    position:relative;
+    overflow:hidden;
+    background:#111;
+    border: 3px solid red;
+  }
+  .hero-media{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  #info{
+    position:fixed;
+    top:10px;
+    left:10px;
+    z-index:999;
+    background:black;
+    color:#0f0;
+    padding:16px;
+    font-size:16px;
+    line-height:1.6;
+    border:2px solid lime;
+    max-width:90vw;
+  }
+</style>
+</head>
+<body>
+
+<div id="info">Loading... (make sure image.jpg is in the same folder as this file)</div>
+
+<section class="hero" id="hero">
+  <img class="hero-media" id="media" src="image.jpg" alt="">
+</section>
+
+<script>
+  function report(){
+    const hero = document.getElementById('hero');
+    const media = document.getElementById('media');
+    const heroRect = hero.getBoundingClientRect();
+    const mediaRect = media.getBoundingClientRect();
+    const html = document.documentElement;
+
+    document.getElementById('info').innerText =
+      'window.innerWidth: ' + window.innerWidth + 'px\n' +
+      'img naturalWidth: ' + media.naturalWidth + 'px\n' +
+      'img naturalHeight: ' + media.naturalHeight + 'px\n' +
+      'img complete: ' + media.complete + '\n' +
+      '---\n' +
+      '.hero width (red box): ' + heroRect.width.toFixed(0) + 'px\n' +
+      '.hero-media (img) width: ' + mediaRect.width.toFixed(0) + 'px\n' +
+      '.hero-media (img) left: ' + mediaRect.left.toFixed(0) + 'px\n' +
+      '.hero-media (img) right: ' + mediaRect.right.toFixed(0) + 'px\n' +
+      '---\n' +
+      'If img width is smaller than\n' +
+      'hero width, screenshot this.';
+  }
+
+  const img = document.getElementById('media');
+  if (img.complete) {
+    report();
+  } else {
+    img.addEventListener('load', report);
+    img.addEventListener('error', function(){
+      document.getElementById('info').innerText = 'IMAGE FAILED TO LOAD.\nMake sure image.jpg is in the same folder as this html file.';
+    });
+  }
+  window.addEventListener('resize', report);
+</script>
+
+</body>
+</html>
