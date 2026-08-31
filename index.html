@@ -1235,8 +1235,6 @@ body.intro-running.intro-finished .scroll-hint{
     overflow-x:clip;
   }
 
-  body.menu-open{overflow:hidden;}
-
   header{
     min-height:62px;
     padding:10px 12px;
@@ -1268,41 +1266,9 @@ body.intro-running.intro-finished .scroll-hint{
 
   .play-link .tri{font-size:8px;}
 
-  .menu-toggle{
-    min-height:40px;
-    padding:0 4px;
-    font-size:10px;
-    letter-spacing:.12em;
-    white-space:nowrap;
-  }
-
-  nav.main-links.mobile-open{
-    top:62px;
-    left:0;
-    right:0;
-    width:100%;
-    height:calc(100dvh - 62px);
-    transform:none;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    padding:18px 20px calc(28px + env(safe-area-inset-bottom));
-    gap:0;
-    background:rgba(4,4,4,.985);
-    border-top:1px solid var(--line);
-  }
-
-  nav.main-links.mobile-open a{
-    width:100%;
-    padding:16px 4px;
-    border-bottom:1px solid var(--line);
-    font-family:var(--serif);
-    font-size:clamp(1.25rem,6vw,1.55rem);
-    font-weight:400;
-    letter-spacing:.06em;
-    text-shadow:none;
-  }
-
-  nav.main-links.mobile-open a::after{display:none;}
+  /* Mobile is intentionally a clean landing page: logo + PLAY only. */
+  nav.main-links{display:none !important;}
+  .menu-toggle{display:none !important;}
 
   .hero{
     height:100svh;
@@ -1461,7 +1427,7 @@ body.intro-running.intro-finished .scroll-hint{
 
   .scroll-top-btn{
     right:14px;
-    bottom:calc(14px + env(safe-area-inset-bottom));
+    bottom:calc(88px + env(safe-area-inset-bottom));
     width:42px;
     height:42px;
   }
@@ -1469,12 +1435,19 @@ body.intro-running.intro-finished .scroll-hint{
   .horror-symbol:nth-child(n+6){display:none;}
 }
 
+/* Keep the scroll-to-top control clear of lower-right hosting badges/overlays. */
+@media (min-width:821px){
+  .scroll-top-btn{
+    right:24px;
+    bottom:86px;
+  }
+}
+
 @media (max-width:380px){
   header{padding-left:10px;padding-right:10px;}
   .logo{height:30px;max-width:100px;}
   .nav-right{gap:6px;}
   .play-link{min-height:38px;padding:8px 10px;font-size:9px;}
-  .menu-toggle{min-height:38px;font-size:9px;letter-spacing:.1em;}
   .hero-logo{width:86vw;}
   .logline{font-size:.88rem;max-width:30ch;}
   section{padding-left:16px;padding-right:16px;}
@@ -1580,7 +1553,6 @@ body.intro-running.intro-finished .scroll-hint{
       real link, e.g. href="https://yourgame.example.com"
     -->
     <a href="register.html" class="play-link" aria-label="Play">PLAY <span class="tri">▷</span></a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">MENU</button>
   </div>
 </header>
 
@@ -1819,36 +1791,6 @@ punishment is long, precise, and merciless.</p>
         aria-label="Scroll to top">
   ↑
 </button>
-
-<script>
-  const mobileMenuToggle = document.getElementById('menuToggle');
-  const mobileMainNav = document.getElementById('mainNav');
-
-  mobileMenuToggle.setAttribute('aria-expanded','false');
-
-  function setMobileMenu(open){
-    mobileMainNav.classList.toggle('mobile-open',open);
-    document.body.classList.toggle('menu-open',open);
-    mobileMenuToggle.setAttribute('aria-expanded',String(open));
-    mobileMenuToggle.textContent = open ? 'CLOSE' : 'MENU';
-  }
-
-  mobileMenuToggle.addEventListener('click', function(){
-    setMobileMenu(!mobileMainNav.classList.contains('mobile-open'));
-  });
-
-  document.querySelectorAll('#mainNav a').forEach(function(a){
-    a.addEventListener('click', function(){
-      setMobileMenu(false);
-    });
-  });
-
-  window.addEventListener('resize', function(){
-    if(window.innerWidth > 820){
-      setMobileMenu(false);
-    }
-  });
-</script>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
